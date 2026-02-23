@@ -1,143 +1,360 @@
-#  Cloud Cost Knowledge Graph with Hybrid RAG & FastAPI
+# 🚀 Cloud Cost Knowledge Graph with Hybrid RAG & FastAPI
 
-> Ontology-Driven Cloud FinOps Intelligence System  
-> Built with Python 3.11, Neo4j, Vector Embeddings, and LLM-powered RAG
-
----
-
-##  Overview
-
-This project implements a **Cloud Cost Knowledge Base** using:
-
-- ✅ FOCUS 1.0 FinOps specification  
-- ✅ Ontology-driven Knowledge Graph (Neo4j)  
-- ✅ Vector embeddings for semantic retrieval  
-- ✅ Hybrid RAG (Graph + Vector Search)  
-- ✅ FastAPI REST layer  
-- ✅ OpenAI grounded financial explanations  
-
-The system ingests AWS and Azure FOCUS billing datasets (1900+ records), models them semantically, and enables intelligent cost analysis queries.
+> Ontology-Driven FinOps Intelligence System  
+> Built with Python 3.11, Neo4j, Vector Embeddings & LLM-powered Hybrid RAG
 
 ---
 
+# 1️⃣ System Architecture
+
+## High-Level Architecture
+
+
+AWS & Azure FOCUS XLS Files
+↓
+Data Ingestion Layer (Pandas + Validation)
+↓
+Neo4j Knowledge Graph (Ontology Modeled)
+↓
+Vector Embedding Layer (Sentence Transformers)
+↓
+Hybrid Retrieval (Vector + Graph Traversal)
+↓
+LLM Grounded Response (OpenAI)
+↓
+FastAPI REST Interface
+
+
+## Runtime Query Flow
+
+
+User Question
+↓
+Intent Detection
+↓
+Vector Search (Service Embeddings)
+↓
+Graph Traversal (Structured Cost Aggregation)
+↓
+Context Assembly + Provenance
+↓
+LLM Response Generation
+↓
+API Output
+
+
+This architecture separates:
+
+- Data modeling
+- Storage
+- Retrieval
+- Reasoning
+- Presentation
+
+Ensuring modular scalability.
 
 ---
 
-##  Core Components
+# 2️⃣ Ontology Design Rationale
 
-### 1️⃣ Ontology Layer (FOCUS 1.0 Based)
+The ontology is based on **FOCUS 1.0 FinOps specification** to ensure semantic standardization across AWS and Azure billing exports.
 
-Implemented classes:
+## Core Classes
 
-- CostRecord  
-- BillingAccount  
-- SubAccount  
-- Service  
-- Resource  
-- Charge  
-- Location  
-- VendorSpecificAttributes (AWS / Azure)  
-- CostAllocation  
+- CostRecord
+- BillingAccount
+- SubAccount
+- Service
+- Resource
+- Charge
+- Location
+- VendorSpecificAttributes (AWS / Azure)
+- CostAllocation
 
-Includes:
+### Why Ontology?
 
-- Cardinality constraints  
-- Validation rules  
-- Derived fields  
-- Commitment exclusion logic  
-- Cost type reasoning  
+Cloud billing data is:
+- Vendor-specific
+- Semi-structured
+- Difficult to compare across providers
 
----
+Ontology ensures:
 
-### 2️⃣ Knowledge Graph (Neo4j)
-
-Key Relationships:
-
-- `(CostRecord)-[:INCURRED_BY]->(Resource)`
-- `(Resource)-[:USES_SERVICE]->(Service)`
-- `(CostRecord)-[:HAS_CHARGE]->(Charge)`
-- `(CostRecord)-[:IN_BILLING_PERIOD]->(BillingPeriod)`
-- `(CostRecord)-[:BELONGS_TO_BILLING_ACCOUNT]->(BillingAccount)`
-- `(CostRecord)-[:HAS_VENDOR_ATTRS]->(VendorSpecificAttributes)`
-
-Indexes:
-
-- Uniqueness constraints
-- Service index
-- Vector index (384 dimensions, cosine similarity)
+- Unified schema across AWS & Azure
+- Explicit financial semantics
+- Traceable cost lineage
+- Accurate commitment calculations
 
 ---
 
-### 3️⃣ Hybrid RAG Pipeline
+## Derived Financial Logic
 
-The system combines:
-
--  Vector similarity search  
--  Structured graph traversal  
--  Cost aggregation logic  
--  Provenance tracking  
--  LLM-based grounded explanation  
-
-Financial reasoning example:
-TotalSpend = UsageCost + CommitmentPurchaseCost
+Cost analysis relies on proper cost selection:
 
 
-To prevent double counting, commitment purchases and fees are excluded during utilization calculations.
+EffectiveCost = BilledCost + AmortizedCost
+
+
+Commitment utilization excludes purchase & fee charges to prevent double counting.
 
 ---
 
-##  Data Ingestion
+# 3️⃣ Graph Schema Design
 
-- AWS FOCUS dataset (~900+ records)
-- Azure FOCUS dataset (~1000+ records)
-- Null-safe ingestion
-- Vendor attribute normalization
-- 1900+ CostRecords modeled in graph
+## Node Types
 
----
-
-## 🔌 REST API (FastAPI)
-
-
-
-
-### Endpoints
-
-| Endpoint | Method | Description |
-|-----------|--------|------------|
-| `/health` | GET | Health check |
-| `/query` | POST | Ask cloud cost question |
-| `/concept/{name}` | GET | Inspect service node |
-| `/stats` | GET | Graph statistics |
-
-### Swagger URL
-http://127.0.0.1:8000/docs
----
-
-##  Example Queries
-
-- Compare storage costs between AWS and Azure  
-- Find top 5 most expensive services  
-- Why does total increase when including commitment purchases?  
-- Which cost type should be used to analyze spend?  
-- What is Azure equivalent of AWS S3?  
-- Calculate commitment utilization correctly  
+| Node | Purpose |
+|------|---------|
+| CostRecord | Atomic billing entry |
+| Service | Cloud service (EC2, S3, Azure Blob) |
+| Resource | Specific deployed resource |
+| Charge | Usage, CommitmentPurchase, Fee |
+| BillingAccount | Top-level account |
+| Location | Region mapping |
+| VendorSpecificAttributes | x_* vendor fields |
 
 ---
 
-##  Installation & Setup
+## Core Relationships
 
-### 1️⃣ Clone Repository
+- (CostRecord)-[:INCURRED_BY]->(Resource)
+- (Resource)-[:USES_SERVICE]->(Service)
+- (CostRecord)-[:HAS_CHARGE]->(Charge)
+- (CostRecord)-[:IN_BILLING_PERIOD]->(BillingPeriod)
+- (CostRecord)-[:BELONGS_TO_BILLING_ACCOUNT]->(BillingAccount)
+- (CostRecord)-[:HAS_VENDOR_ATTRS]->(VendorSpecificAttributes)
+- (CostRecord)-[:ALLOCATED_VIA]->(CostAllocation)
 
-```bash
+---
+
+## Indexing Strategy
+
+- Uniqueness constraints (billingAccountId, resourceId)
+- Standard indexes (serviceName)
+- Vector index (384-dimension cosine similarity)
+
+---
+
+# 4️⃣ Vector Store Design
+
+Embedding Model:
+- sentence-transformers/all-MiniLM-L6-v2
+- 384-dimensional vectors
+
+Stored:
+- Directly inside Neo4j nodes as `embedding` property
+
+Vector Index:
+- Cosine similarity
+- Used for semantic retrieval of services and financial concepts
+
+Purpose:
+- Map natural language queries to graph concepts
+- Enable semantic service discovery
+
+---
+
+# 5️⃣ RAG Pipeline Architecture
+
+This system implements **Hybrid RAG**.
+
+## Step 1: Semantic Retrieval
+
+Vector search finds relevant services based on query meaning.
+
+Example:
+"Optimize storage cost"
+→ Matches S3, Azure Blob, Storage Accounts
+
+---
+
+## Step 2: Graph Traversal
+
+Cypher query retrieves structured financial data:
+
+- Cost aggregation
+- Resource linkage
+- Charge category filtering
+- Commitment exclusion logic
+
+Example aggregation:
+
+
+TotalCost = SUM(billedCost)
+
+
+---
+
+## Step 3: Context Assembly
+
+System assembles:
+
+- Aggregated cost totals
+- Resource-level provenance
+- Financial logic applied
+- Relationship paths
+
+---
+
+## Step 4: LLM Generation
+
+LLM receives structured context only.
+
+No raw CSV.
+No hallucinated data.
+Grounded answer only.
+
+---
+
+# 6️⃣ Relationship Types & Mapping Methodology
+
+## Mapping Strategy
+
+AWS and Azure use vendor-specific columns:
+
+- AWS: x_ServiceCode, x_UsageType
+- Azure: x_skumetercategory, x_skudescription
+
+These are normalized via:
+
+- ServiceCategory
+- PricingCategory
+- CommitmentDiscountType
+
+Cross-cloud equivalence is determined via:
+- Service semantic similarity
+- Functional category mapping
+
+---
+
+## Allocation Logic
+
+CostAllocation nodes define:
+
+- allocationMethod
+- allocationTargetType
+- allocationBasis
+- isSharedCost
+
+Supports:
+- Proportional allocation
+- Even split
+- Weighted distribution
+
+---
+
+# 7️⃣ Data Ingestion
+
+Datasets Used:
+
+- AWS FOCUS billing export (~900+ records)
+- Azure FOCUS billing export (~1000+ records)
+
+Process:
+
+1. Null-safe parsing
+2. Column normalization
+3. Node creation
+4. Relationship linking
+5. Vendor attribute classification
+
+Total nodes created: ~1900+ CostRecords
+
+---
+
+# 8️⃣ Setup & Installation
+
+## Clone Repository
+
+
 git clone https://github.com/yourusername/cloud-cost-kg.git
+
 cd cloud-cost-kg
 
-2️⃣ Create Virtual Environment
+
+## Create Virtual Environment
+
+
 python -m venv venv
 venv\Scripts\activate
-3️⃣ Install Dependencies
+
+
+## Install Dependencies
+
+
 pip install -r requirements.txt
 
 
+## Configure Environment Variables
 
+Create `.env` file:
+
+
+OPENAI_API_KEY=your_key_here
+NEO4J_URI=bolt://localhost:7687
+NEO4J_USER=neo4j
+NEO4J_PASSWORD=your_password
+
+
+`.env` is excluded via `.gitignore`
+
+---
+
+## Run Application
+
+
+uvicorn api.app:app --reload
+
+
+Swagger UI:
+
+
+http://127.0.0.1:8000/docs
+
+
+---
+
+# 9️⃣ Example Supported Queries
+
+- Compare storage costs between AWS and Azure
+- Find top 5 most expensive services
+- Why does total increase when including commitment purchases?
+- Which cost type should be used for spend analysis?
+- What is Azure equivalent of AWS S3?
+- Calculate commitment utilization correctly
+
+---
+
+# 🔟 Evaluation Alignment
+
+| Requirement | Covered |
+|------------|----------|
+| Ontology Authority | ✅ |
+| Graph Schema Design | ✅ |
+| Vector Semantic Layer | ✅ |
+| Hybrid RAG Retrieval | ✅ |
+| Data Provenance | ✅ |
+| REST API (Bonus) | ✅ |
+
+---
+
+# 🏁 Conclusion
+
+This project demonstrates:
+
+- Ontology engineering
+- Knowledge graph modeling
+- Financial cost reasoning
+- Hybrid RAG architecture
+- LLM grounding
+- Production-style API design
+
+It represents a portfolio-grade AI Engineering system aligned with FinOps standards.
+
+---
+
+## Author
+
+Ayush Kumar  
+B.Tech AIML  
+AI Engineer | Knowledge Graph | FinOps Intelligence
