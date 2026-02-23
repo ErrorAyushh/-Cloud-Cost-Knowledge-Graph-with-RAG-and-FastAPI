@@ -133,5 +133,11 @@ http://127.0.0.1:8000/docs
 git clone https://github.com/yourusername/cloud-cost-kg.git
 cd cloud-cost-kg
 
-### Swagger URL
-http://127.0.0.1:8000/docs
+2️⃣ Create Virtual Environment
+python -m venv venv
+venv\Scripts\activate
+3️⃣ Install Dependencies
+pip install -r requirements.txt
+
+
+
