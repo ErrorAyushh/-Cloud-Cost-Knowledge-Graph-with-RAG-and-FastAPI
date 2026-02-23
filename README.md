@@ -1,4 +1,4 @@
-# 🚀 Cloud Cost Knowledge Graph with Hybrid RAG & FastAPI
+#  Cloud Cost Knowledge Graph with Hybrid RAG & FastAPI
 
 > Ontology-Driven FinOps Intelligence System  
 > Built with Python 3.11, Neo4j, Vector Embeddings & LLM-powered Hybrid RAG
@@ -296,7 +296,7 @@ NEO4J_USER=neo4j
 NEO4J_PASSWORD=your_password
 
 
-`.env` is excluded via `.gitignore`
+
 
 ---
 
@@ -324,17 +324,6 @@ http://127.0.0.1:8000/docs
 - Calculate commitment utilization correctly
 
 ---
-
-# 🔟 Evaluation Alignment
-
-| Requirement | Covered |
-|------------|----------|
-| Ontology Authority | ✅ |
-| Graph Schema Design | ✅ |
-| Vector Semantic Layer | ✅ |
-| Hybrid RAG Retrieval | ✅ |
-| Data Provenance | ✅ |
-| REST API (Bonus) | ✅ |
 
 ---
 
