@@ -10,19 +10,7 @@
 ## High-Level Architecture
 
 
-AWS & Azure FOCUS XLS Files
-↓
-Data Ingestion Layer (Pandas + Validation)
-↓
-Neo4j Knowledge Graph (Ontology Modeled)
-↓
-Vector Embedding Layer (Sentence Transformers)
-↓
-Hybrid Retrieval (Vector + Graph Traversal)
-↓
-LLM Grounded Response (OpenAI)
-↓
-FastAPI REST Interface
+AWS & Azure FOCUS XLS Files → Data Ingestion Layer (Pandas + Validation) → Neo4j Knowledge Graph (Ontology Modeled) → Vector Embedding Layer (Sentence Transformers) → Hybrid Retrieval (Vector + Graph Traversal) →LLM Grounded Response (OpenAI) → FastAPI REST Interface
 
 
 ## Runtime Query Flow
