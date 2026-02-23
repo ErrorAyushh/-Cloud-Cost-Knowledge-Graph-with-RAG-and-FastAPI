@@ -28,19 +28,7 @@ FastAPI REST Interface
 ## Runtime Query Flow
 
 
-User Question
-↓
-Intent Detection
-↓
-Vector Search (Service Embeddings)
-↓
-Graph Traversal (Structured Cost Aggregation)
-↓
-Context Assembly + Provenance
-↓
-LLM Response Generation
-↓
-API Output
+User Question →Intent Detection →Vector Search (Service Embeddings) →Graph Traversal (Structured Cost Aggregation) →Context Assembly + Provenance → LLM Response Generation →API Output
 
 
 This architecture separates:
