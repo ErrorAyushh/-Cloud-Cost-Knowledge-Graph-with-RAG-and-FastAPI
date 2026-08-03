@@ -1,17 +1,4 @@
-"""
-Cloud Cost Knowledge Graph Assistant
-=====================================
-A professional SaaS-style Streamlit dashboard for querying cloud cost data
-through a Neo4j knowledge graph + RAG pipeline (Groq LLM).
 
-NOTE ON SCOPE:
---------------
-Everything under the "BACKEND LOGIC" section below is copied EXACTLY from
-the original application. Nothing in that section (env loading, Neo4j
-connection, embedding model, Groq client, graph_query, generate_answer,
-rag_pipeline) has been modified. Only the Streamlit UI layer has been
-redesigned.
-"""
 
 import os
 import re
