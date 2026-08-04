@@ -1,8 +1,12 @@
-fastapi
-uvicorn
+streamlit
 neo4j
 sentence-transformers
-openai
-pandas
+langchain
+langchain-community
+groq
 python-dotenv
-plotly
+pandas
+openpyxl
+numpy
+torch
+transformers
