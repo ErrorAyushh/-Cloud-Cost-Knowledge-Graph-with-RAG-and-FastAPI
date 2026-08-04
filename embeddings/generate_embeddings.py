@@ -3,9 +3,14 @@ from sentence_transformers import SentenceTransformer
 
 
 
-URI = "bolt://localhost:7687"
-USER = "neo4j"
-PASSWORD = "Ayushbb@1234"  
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+URI = os.getenv("NEO4J_URI")
+USER = os.getenv("NEO4J_USER")
+PASSWORD = os.getenv("NEO4J_PASSWORD")
 
 VECTOR_INDEX_NAME = "service_embedding_index"
 MODEL_NAME = "all-MiniLM-L6-v2"
