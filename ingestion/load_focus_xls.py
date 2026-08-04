@@ -2,9 +2,14 @@ import pandas as pd
 from neo4j import GraphDatabase
 import math
 
-NEO4J_URI = "bolt://localhost:7687"
-NEO4J_USER = "neo4j"
-NEO4J_PASSWORD = "Ayushbb@1234"
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+NEO4J_URI = os.getenv("NEO4J_URI")
+NEO4J_USER = os.getenv("NEO4J_USER")
+NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD")
 
 driver = GraphDatabase.driver(
     NEO4J_URI,
