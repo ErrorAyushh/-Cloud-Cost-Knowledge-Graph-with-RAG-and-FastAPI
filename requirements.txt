@@ -10,3 +10,4 @@ openpyxl
 numpy
 torch
 transformers
+plotly
