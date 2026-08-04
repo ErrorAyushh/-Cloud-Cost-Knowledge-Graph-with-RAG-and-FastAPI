@@ -11,7 +11,6 @@ import plotly.graph_objects as go
 import streamlit as st
 from dotenv import load_dotenv
 from neo4j import GraphDatabase
-from openai import OpenAI
 from sentence_transformers import SentenceTransformer
 
 # =========================================================================
