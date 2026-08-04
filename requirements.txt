@@ -1,13 +1,9 @@
 streamlit
 neo4j
-sentence-transformers
-langchain
-langchain-community
 groq
 python-dotenv
 pandas
 openpyxl
 numpy
-torch
-transformers
 plotly
+openai
