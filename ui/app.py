@@ -1,4 +1,17 @@
+"""
+Cloud Cost Knowledge Graph Assistant
+=====================================
+A professional SaaS-style Streamlit dashboard for querying cloud cost data
+through a Neo4j knowledge graph + RAG pipeline (Groq LLM).
 
+NOTE ON SCOPE:
+--------------
+Everything under the "BACKEND LOGIC" section below is copied EXACTLY from
+the original application. Nothing in that section (env loading, Neo4j
+connection, embedding model, Groq client, graph_query, generate_answer,
+rag_pipeline) has been modified. Only the Streamlit UI layer has been
+redesigned.
+"""
 
 import os
 import re
@@ -11,7 +24,7 @@ import plotly.graph_objects as go
 import streamlit as st
 from dotenv import load_dotenv
 from neo4j import GraphDatabase
-from sentence_transformers import SentenceTransformer
+from openai import OpenAI
 
 # =========================================================================
 # BACKEND LOGIC — UNCHANGED (do not modify)
@@ -32,7 +45,6 @@ GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 # Models
 # -------------------------------------------------------
 
-EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
 LLM_MODEL = "llama-3.3-70b-versatile"
 
 # -------------------------------------------------------
@@ -48,7 +60,6 @@ driver = GraphDatabase.driver(
 # Embedding Model
 # -------------------------------------------------------
 
-embedding_model = SentenceTransformer(EMBEDDING_MODEL)
 
 # -------------------------------------------------------
 # Groq Client
@@ -418,8 +429,8 @@ def render_sidebar() -> None:
         # LLM + embedding info
         st.markdown("**LLM Provider**")
         st.write(f"🧠 Groq — `{LLM_MODEL}`")
-        st.markdown("**Embedding Model**")
-        st.write(f"🔎 `{EMBEDDING_MODEL}`")
+        st.markdown("**Retrieval Engine**")
+        st.write("🔎 Neo4j Knowledge Graph")
         st.divider()
 
         # Query statistics
